@@ -1,0 +1,11 @@
+{
+  "name": "smp",
+  "version": "1.0.0",
+  "description": "smp",
+  "main": "main.js",
+  "scripts": {
+    "test": "electron ."
+  },
+  "author": "Simas Juknelis",
+  "license": "MIT"
+}
