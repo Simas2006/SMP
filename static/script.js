@@ -16,6 +16,10 @@ class MusicPlayer {
     ];
     this.currentSongIndex = -1;
     this.volume = 100;
+    this.savedVolume = -1;
+    setInterval(_ => {
+      this.updateTime();
+    },100);
   }
   playNextSong() {
     if ( ! this.active ) return;
@@ -33,7 +37,7 @@ class MusicPlayer {
     }
     songName = songName.split(".").slice(0,-1).join(".");
     document.getElementById("home-album-name").innerText = `Now Playing: ${this.albumName}`;
-    document.getElementById("home-song-name").innerText = `${songName} (${this.currentSongIndex + 1} in ${this.albumSongs.length})`;
+    document.getElementById("home-song-name").innerText = `${songName} (${this.currentSongIndex + 1} of ${this.albumSongs.length})`;
   }
   resetAll() {
     this.active = false;
@@ -49,6 +53,7 @@ class MusicPlayer {
     else this.volume += amount;
     this.volume = Math.max(Math.min(this.volume,100),0);
     this.audioObject.volume = this.volume / 100;
+    if ( this.volume > 0 ) this.savedVolume = -1;
     document.getElementById("home-volume-button").innerText = `${this.volume}%`;
   }
   togglePlay(setState) {
@@ -62,6 +67,28 @@ class MusicPlayer {
       this.audioObject.pause();
     }
     this.currentlyPlaying = nextState;
+  }
+  updateTime() {
+    var pad = n => n < 10 ? "0" + n : n.toString();
+    var currentTime = this.audioObject.currentTime || 0;
+    var duration = this.audioObject.duration || 0;
+    document.getElementById("home-start-time").innerText = pad(Math.floor(currentTime / 60)) + ":" + pad(Math.floor(currentTime % 60));
+    document.getElementById("home-end-time").innerText = pad(Math.floor(duration / 60)) + ":" + pad(Math.floor(duration % 60));
+    document.getElementById("home-current-progress").style.width = `${(currentTime / duration) * 15}em`
+  }
+  muteButton() {
+    if ( this.volume > 0 ) {
+      this.savedVolume = this.volume;
+      this.volume = 0;
+    } else {
+      if ( this.savedVolume == -1 ) return;
+      this.volume = this.savedVolume;
+      this.savedVolume = -1;
+    }
+    this.setVolume(0,true);
+  }
+  rewindSong() {
+    this.audioObject.currentTime = 0;
   }
 }
 

@@ -45,6 +45,9 @@ button {
 #home-panel button.wide-button {
   width: calc(100% - 10px);
 }
+#audioObject {
+  display: none;
+}
 .inline {
   display: inline;
 }

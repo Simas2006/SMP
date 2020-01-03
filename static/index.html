@@ -17,18 +17,18 @@
     <p id="home-album-name">Now Playing: Nothing!</p>
     <p id="home-song-name">&nbsp;</p>
     <div class="inline">
-      <span>00:00</span>
+      <span id="home-start-time">00:00</span>
       <div id="home-progress-bar">
         <div id="home-current-progress"></div>
       </div>
-      <span>04:12</span>
+      <span id="home-end-time">00:00</span>
     </div>
     <br />
     <br />
     <table id="home-panel">
       <tr>
         <td>
-          <button onclick="">&#x23ea;</button>
+          <button onclick="mplayer.rewindSong()">&#x23ea;</button>
         </td>
         <td>
           <button id="home-play-button" onclick="mplayer.togglePlay()">||</button>
@@ -42,7 +42,7 @@
           <button onclick="mplayer.setVolume(-5,true)">V-</button>
         </td>
         <td>
-          <button id="home-volume-button" onclick="">100%</button>
+          <button id="home-volume-button" onclick="mplayer.muteButton()">100%</button>
         </td>
         <td>
           <button onclick="mplayer.setVolume(5,true)">V+</button>
