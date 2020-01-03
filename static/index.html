@@ -14,8 +14,8 @@
     <button class="important" onclick="">View Photos</button>
     <button class="important" onclick="">Enter Settings</button>
     <hr />
-    <h3>Now Playing: Album name</h3>
-    <p>Song name (X of 10)</p>
+    <p id="home-album-name">Now Playing: Nothing!</p>
+    <p id="home-song-name">&nbsp;</p>
     <div class="inline">
       <span>00:00</span>
       <div id="home-progress-bar">
@@ -28,24 +28,24 @@
     <table id="home-panel">
       <tr>
         <td>
-          <button onclick="">&lt;</button>
+          <button onclick="">&#x23ea;</button>
         </td>
         <td>
-          <button onclick="">||</button>
+          <button id="home-play-button" onclick="mplayer.togglePlay()">||</button>
         </td>
         <td>
-          <button onclick="">&gt;</button>
+          <button onclick="mplayer.playNextSong();">&#x23e9;</button>
         </td>
       </tr>
       <tr>
         <td>
-          <button onclick="">+</button>
+          <button onclick="mplayer.setVolume(-5,true)">V-</button>
         </td>
         <td>
-          <button onclick="">100%</button>
+          <button id="home-volume-button" onclick="">100%</button>
         </td>
         <td>
-          <button onclick="">-</button>
+          <button onclick="mplayer.setVolume(5,true)">V+</button>
         </td>
       </tr>
       <tr>
@@ -53,10 +53,11 @@
           <button class="wide-button" onclick="">Loop Forever</button>
         </td>
         <td>
-          <button onclick="">X</button>
+          <button onclick="mplayer.resetAll()">X</button>
         </td>
       </tr>
     </table>
   </div>
+  <audio id="audioObject"></audio>
 </body>
 </html>
