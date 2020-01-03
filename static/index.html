@@ -3,10 +3,60 @@
 <head>
   <meta charset="utf-8">
   <title>SMP</title>
-  <link rel="stylesheet" type="text/css" src="style.css" />
+  <link rel="stylesheet" type="text/css" href="reset.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
   <script src="script.js"></script>
 </head>
 <body>
-
+  <h1>SMP</h1>
+  <div id="home-page">
+    <button class="important" onclick="">Search for Music</button>
+    <button class="important" onclick="">View Photos</button>
+    <button class="important" onclick="">Enter Settings</button>
+    <hr />
+    <h3>Now Playing: Album name</h3>
+    <p>Song name (X of 10)</p>
+    <div class="inline">
+      <span>00:00</span>
+      <div id="home-progress-bar">
+        <div id="home-current-progress"></div>
+      </div>
+      <span>04:12</span>
+    </div>
+    <br />
+    <br />
+    <table id="home-panel">
+      <tr>
+        <td>
+          <button onclick="">&lt;</button>
+        </td>
+        <td>
+          <button onclick="">||</button>
+        </td>
+        <td>
+          <button onclick="">&gt;</button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button onclick="">+</button>
+        </td>
+        <td>
+          <button onclick="">100%</button>
+        </td>
+        <td>
+          <button onclick="">-</button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button class="wide-button" onclick="">Loop Forever</button>
+        </td>
+        <td>
+          <button onclick="">X</button>
+        </td>
+      </tr>
+    </table>
+  </div>
 </body>
 </html>
