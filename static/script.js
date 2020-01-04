@@ -3,7 +3,7 @@ var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 var validMusicExts = [".mp3",".m4a",".wav",".ogg"];
 var mplayer;
 
-class MusicPlayer {
+class MusicAgent {
   constructor() {
     this.audioObject = document.getElementById("audioObject");
     this.audioObject.onended = _ => this.playNextSong();
@@ -90,45 +90,44 @@ class MusicPlayer {
   rewindSong() {
     this.audioObject.currentTime = 0;
   }
-}
-
-function renderMusicPage() {
-  fs.readdir(`${__dirname}/../data/music`,function(err,list) {
-    if ( err ) throw err;
-    list = list.filter(item => ! item.startsWith("."));
-    var albumObj = document.getElementById("music-album-list");
-    while ( albumObj.firstChild ) {
-      albumObj.removeChild(albumObj.firstChild);
-    }
-    for ( var i = 0; i < list.length; i++ ) {
-      var button = document.createElement("button");
-      button.innerText = list[i];
-      button["data-album"] = list[i];
-      button.onclick = function() {
-        var album = this["data-album"];
-        fs.readdir(`${__dirname}/../data/music/${album}`,function(err,list) {
-          list = list.filter(item => validMusicExts.map(jtem => item.endsWith(jtem)).includes(true));
-          mplayer.albumName = album;
-          mplayer.albumSongs = list;
-          mplayer.currentSongIndex = -1;
-          mplayer.active = true;
-          openPage("home");
-          mplayer.playNextSong();
-        });
+  renderSelectPage() {
+    fs.readdir(`${__dirname}/../data/music`,function(err,list) {
+      if ( err ) throw err;
+      list = list.filter(item => ! item.startsWith("."));
+      var albumObj = document.getElementById("music-album-list");
+      while ( albumObj.firstChild ) {
+        albumObj.removeChild(albumObj.firstChild);
       }
-      albumObj.appendChild(button);
-    }
-  });
+      for ( var i = 0; i < list.length; i++ ) {
+        var button = document.createElement("button");
+        button.innerText = list[i];
+        button["data-album"] = list[i];
+        button.onclick = function() {
+          var album = this["data-album"];
+          fs.readdir(`${__dirname}/../data/music/${album}`,function(err,list) {
+            list = list.filter(item => ! item.startsWith(".")).filter(item => validMusicExts.filter(jtem => item.endsWith(jtem)).length > 0);
+            mplayer.albumName = album;
+            mplayer.albumSongs = list;
+            mplayer.currentSongIndex = -1;
+            mplayer.active = true;
+            openPage("home");
+            mplayer.playNextSong();
+          });
+        }
+        albumObj.appendChild(button);
+      }
+    });
+  }
 }
 
 function openPage(page) {
   Array.from(document.getElementsByClassName("page")).forEach(function(item) {
     item.style.display = item.id == page + "-page" ? "inline" : "none";
   });
-  if ( page == "music" ) renderMusicPage();
+  if ( page == "music" ) mplayer.renderSelectPage();
 }
 
 window.onload = function() {
   openPage("home");
-  mplayer = new MusicPlayer();
+  mplayer = new MusicAgent();
 }
