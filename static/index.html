@@ -9,8 +9,8 @@
 </head>
 <body>
   <h1>SMP</h1>
-  <div id="home-page">
-    <button class="important" onclick="">Search for Music</button>
+  <div id="home-page" class="page">
+    <button class="important" onclick="openPage('music')">Search for Music</button>
     <button class="important" onclick="">View Photos</button>
     <button class="important" onclick="">Enter Settings</button>
     <hr />
@@ -31,10 +31,10 @@
           <button onclick="mplayer.rewindSong()">&#x23ea;</button>
         </td>
         <td>
-          <button id="home-play-button" onclick="mplayer.togglePlay()">||</button>
+          <button id="home-play-button" onclick="mplayer.togglePlay()">▶</button>
         </td>
         <td>
-          <button onclick="mplayer.playNextSong();">&#x23e9;</button>
+          <button onclick="mplayer.playNextSong()">&#x23e9;</button>
         </td>
       </tr>
       <tr>
@@ -57,6 +57,14 @@
         </td>
       </tr>
     </table>
+  </div>
+  <div id="music-page" class="page">
+    <button class="important" onclick="openPage('home')">Back to Home</button>
+    <hr />
+    <div id="music-albums">
+      <p>Music Albums:</p>
+      <div id="music-album-list"></div>
+    </div>
   </div>
   <audio id="audioObject"></audio>
 </body>

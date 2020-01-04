@@ -48,6 +48,15 @@ button {
 #audioObject {
   display: none;
 }
+#music-albums {
+  text-align: left;
+}
+#music-album-list * {
+  display: block;
+}
+.page {
+  display: none;
+}
 .inline {
   display: inline;
 }
