@@ -11,7 +11,7 @@
   <h1>SMP</h1>
   <div id="home-page" class="page">
     <button class="important" onclick="openPage('music')">Search for Music</button>
-    <button class="important" onclick="">View Photos</button>
+    <button class="important" onclick="openPage('photo-select')">View Photos</button>
     <button class="important" onclick="">Enter Settings</button>
     <hr />
     <p id="home-album-name">Now Playing: Nothing!</p>
@@ -28,24 +28,24 @@
     <table id="home-panel">
       <tr>
         <td>
-          <button onclick="mplayer.rewindSong()">&#x23ea;</button>
+          <button onclick="magent.rewindSong()">&#x23ea;</button>
         </td>
         <td>
-          <button id="home-play-button" onclick="mplayer.togglePlay()">▶</button>
+          <button id="home-play-button" onclick="magent.togglePlay()">▶</button>
         </td>
         <td>
-          <button onclick="mplayer.playNextSong()">&#x23e9;</button>
+          <button onclick="magent.playNextSong()">&#x23e9;</button>
         </td>
       </tr>
       <tr>
         <td>
-          <button onclick="mplayer.setVolume(-5,true)">V-</button>
+          <button onclick="magent.setVolume(-5,true)">V-</button>
         </td>
         <td>
-          <button id="home-volume-button" onclick="mplayer.muteButton()">100%</button>
+          <button id="home-volume-button" onclick="magent.muteButton()">100%</button>
         </td>
         <td>
-          <button onclick="mplayer.setVolume(5,true)">V+</button>
+          <button onclick="magent.setVolume(5,true)">V+</button>
         </td>
       </tr>
       <tr>
@@ -53,7 +53,7 @@
           <button class="wide-button" onclick="">Loop Forever</button>
         </td>
         <td>
-          <button onclick="mplayer.resetAll()">X</button>
+          <button onclick="magent.resetAll()">X</button>
         </td>
       </tr>
     </table>
@@ -64,6 +64,14 @@
     <div id="music-albums">
       <p>Music Albums:</p>
       <div id="music-album-list"></div>
+    </div>
+  </div>
+  <div id="photo-select-page" class="page">
+    <button class="important" onclick="openPage('home')">Back to Home</button>
+    <hr />
+    <div id="photo-select-albums">
+      <p>Photo Albums:</p>
+      <div id="photo-select-album-list"></div>
     </div>
   </div>
   <audio id="audioObject"></audio>

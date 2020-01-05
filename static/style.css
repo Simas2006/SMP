@@ -48,10 +48,10 @@ button {
 #audioObject {
   display: none;
 }
-#music-albums {
+#music-albums,#photo-select-albums {
   text-align: left;
 }
-#music-album-list * {
+#music-album-list *,#photo-select-album-list * {
   display: block;
 }
 .page {

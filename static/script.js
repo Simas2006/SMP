@@ -1,7 +1,8 @@
 var fs = require("fs");
 var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 var validMusicExts = [".mp3",".m4a",".wav",".ogg"];
-var mplayer;
+var validPhotoExts = [".jpg",".png",".gif",".tiff"];
+var magent,pagent;
 
 class MusicAgent {
   constructor() {
@@ -45,6 +46,7 @@ class MusicAgent {
     this.audioObject.src = "about:blank";
     document.getElementById("home-album-name").innerText = "Now Playing: Nothing!";
     document.getElementById("home-song-name").innerHTML = "&nbsp;";
+    document.getElementById("home-current-progress").style.width = `0em`;
   }
   setVolume(amount,change) {
     if ( ! change ) this.volume = amount;
@@ -74,7 +76,7 @@ class MusicAgent {
     var timeLeft = Math.floor(duration - currentTime);
     document.getElementById("home-start-time").innerText = pad(Math.floor(currentTime / 60)) + ":" + pad(currentTime % 60);
     document.getElementById("home-end-time").innerText = "-" + pad(Math.floor(timeLeft / 60)) + ":" + pad(timeLeft % 60);
-    document.getElementById("home-current-progress").style.width = `${(currentTime / duration) * 15}em`
+    document.getElementById("home-current-progress").style.width = `${(currentTime / duration) * 15}em`;
   }
   muteButton() {
     if ( this.volume > 0 ) {
@@ -105,13 +107,50 @@ class MusicAgent {
         button.onclick = function() {
           var album = this["data-album"];
           fs.readdir(`${__dirname}/../data/music/${album}`,function(err,list) {
-            list = list.filter(item => ! item.startsWith(".")).filter(item => validMusicExts.filter(jtem => item.endsWith(jtem)).length > 0);
-            mplayer.albumName = album;
-            mplayer.albumSongs = list;
-            mplayer.currentSongIndex = -1;
-            mplayer.active = true;
+            list = list.filter(item => ! item.startsWith(".")).filter(item => validMusicExts.filter(jtem => item.toLowerCase().endsWith(jtem)).length > 0);
+            magent.albumName = album;
+            magent.albumSongs = list;
+            magent.currentSongIndex = -1;
+            magent.active = true;
             openPage("home");
-            mplayer.playNextSong();
+            magent.playNextSong();
+          });
+        }
+        albumObj.appendChild(button);
+      }
+    });
+  }
+}
+
+class PhotoAgent {
+  constructor() {
+    this.albumName = null;
+    this.albumImages = [];
+    this.currentImageIndex = 0;
+  }
+  renderImage() {
+
+  }
+  renderSelectPage() {
+    fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
+      if ( err ) throw err;
+      list = list.filter(item => ! item.startsWith("."));
+      var albumObj = document.getElementById("photo-select-album-list");
+      while ( albumObj.firstChild ) {
+        albumObj.removeChild(albumObj.firstChild);
+      }
+      for ( var i = 0; i < list.length; i++ ) {
+        var button = document.createElement("button");
+        button.innerText = list[i];
+        button["data-album"] = list[i];
+        button.onclick = function() {
+          var album = this["data-album"];
+          fs.readdir(`${__dirname}/../data/photos/${album}`,function(err,list) {
+            list = list.filter(item => ! item.startsWith(".")).filter(item => validPhotoExts.filter(jtem => item.toLowerCase().endsWith(jtem)).length > 0);
+            pagent.albumName = album;
+            pagent.albumImages = list;
+            pagent.currentImageIndex = 0;
+            console.log(list);
           });
         }
         albumObj.appendChild(button);
@@ -122,12 +161,14 @@ class MusicAgent {
 
 function openPage(page) {
   Array.from(document.getElementsByClassName("page")).forEach(function(item) {
-    item.style.display = item.id == page + "-page" ? "inline" : "none";
+    item.style.display = (item.id == page + "-page" ? "inline" : "none");
   });
-  if ( page == "music" ) mplayer.renderSelectPage();
+  if ( page == "music" ) magent.renderSelectPage();
+  else if ( page == "photo-select" ) pagent.renderSelectPage();
 }
 
 window.onload = function() {
+  magent = new MusicAgent();
+  pagent = new PhotoAgent();
   openPage("home");
-  mplayer = new MusicAgent();
 }
