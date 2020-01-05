@@ -39,7 +39,7 @@ button {
 }
 #home-panel button {
   display: block;
-  width: 3em;
+  width: 3.5em;
   height: 3em;
 }
 #home-panel button.wide-button {

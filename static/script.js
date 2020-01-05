@@ -15,6 +15,7 @@ class MusicAgent {
     this.currentSongIndex = -1;
     this.volume = 100;
     this.savedVolume = -1;
+    this.loopMode = false;
     setInterval(_ => {
       this.updateTime();
     },100);
@@ -23,8 +24,12 @@ class MusicAgent {
     if ( ! this.active ) return;
     this.currentSongIndex++;
     if ( this.currentSongIndex >= this.albumSongs.length ) {
-      this.resetAll();
-      return;
+      if ( ! this.loopMode ) {
+        this.resetAll();
+        return;
+      } else {
+        this.currentSongIndex = 0;
+      }
     }
     this.audioObject.src = `${__dirname}/../data/music/${encodeURIComponent(this.albumName)}/${encodeURIComponent(this.albumSongs[this.currentSongIndex])}`;
     this.togglePlay(true,true);
@@ -91,6 +96,11 @@ class MusicAgent {
   }
   rewindSong() {
     this.audioObject.currentTime = 0;
+  }
+  switchLoopMode() {
+    this.loopMode = ! this.loopMode;
+    if ( this.loopMode ) document.getElementById("home-loop-button").innerText = "Loops Forever";
+    else document.getElementById("home-loop-button").innerText = "Plays Once";
   }
   renderSelectPage() {
     fs.readdir(`${__dirname}/../data/music`,function(err,list) {
