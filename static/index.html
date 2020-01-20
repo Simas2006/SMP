@@ -5,11 +5,12 @@
   <title>SMP</title>
   <link rel="stylesheet" type="text/css" href="reset.css" />
   <link rel="stylesheet" type="text/css" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
   <script src="script.js"></script>
 </head>
 <body>
-  <h1>SMP</h1>
   <div id="home-page" class="page">
+    <h1>SMP</h1>
     <button class="important" onclick="openPage('music')">Search for Music</button>
     <button class="important" onclick="openPage('photo-select')">View Photos</button>
     <button class="important" onclick="">Enter Settings</button>
@@ -59,6 +60,7 @@
     </table>
   </div>
   <div id="music-page" class="page">
+    <h1>SMP</h1>
     <button class="important" onclick="openPage('home')">Back to Home</button>
     <hr />
     <div id="music-albums">
@@ -67,12 +69,26 @@
     </div>
   </div>
   <div id="photo-select-page" class="page">
+    <h1>SMP</h1>
     <button class="important" onclick="openPage('home')">Back to Home</button>
     <hr />
     <div id="photo-select-albums">
       <p>Photo Albums:</p>
       <div id="photo-select-album-list"></div>
     </div>
+  </div>
+  <div id="photo-viewer-page" class="page">
+    <div id="photo-viewer-menubar">
+      <h1>SMP</h1>
+      <button class="important" onclick="openPage('home')">Back to Home</button>
+      <hr />
+      <table id="photo-viewer-panel"><tr>
+        <td><button onclick="pagent.moveImage(-1)">⇦</button></td>
+        <td><b>Sage</b></td>
+        <td><button onclick="pagent.moveImage(1)">⇨</button></td>
+      </tr></table>
+    </div>
+    <div id="photo-viewer-image-div"></div>
   </div>
   <audio id="audioObject"></audio>
 </body>

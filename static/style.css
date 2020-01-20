@@ -54,6 +54,22 @@ button {
 #music-album-list *,#photo-select-album-list * {
   display: block;
 }
+#photo-viewer-page hr {
+  margin-bottom: 0.1em;
+}
+#photo-viewer-panel button {
+  width: 2em;
+  height: 2em;
+}
+#photo-viewer-panel td:first-child {
+  width: 10vw;
+}
+#photo-viewer-panel td:nth-child(2) {
+  width: 80vw;
+}
+#photo-viewer-panel td:last-child {
+  width: 10vw;
+}
 .page {
   display: none;
 }

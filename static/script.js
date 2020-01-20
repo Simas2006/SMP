@@ -139,7 +139,47 @@ class PhotoAgent {
     this.currentImageIndex = 0;
   }
   renderImage() {
-
+    var image = new Image();
+    image.src = `${__dirname}/../data/photos/${encodeURIComponent(this.albumName)}/${encodeURIComponent(this.albumImages[this.currentImageIndex])}`;
+    image.onload = function() {
+      EXIF.getData(image,function() {
+        var rotatingOrientations = [5,6,7,8];
+        var flippingOrientations = [2,4,5,7]
+        var orientation = EXIF.getTag(this,"Orientation");
+        var imageWidth = window.innerWidth - 30;
+        var imageHeight = window.innerHeight - document.getElementById("photo-viewer-menubar").clientHeight - 25;
+        var ratio = image.height / image.width;
+        if ( rotatingOrientations.includes(orientation) ) ratio = 1 / ratio;
+        var useHeight = ratio * imageWidth > imageHeight;
+        if ( ! rotatingOrientations.includes(orientation) ) {
+          if ( useHeight ) image.height = imageHeight;
+          else image.width = imageWidth;
+        } else {
+          if ( useHeight ) image.width = imageHeight;
+          else image.height = imageWidth;
+        }
+        console.log(orientation);
+        var transform = "";
+        if ( rotatingOrientations.includes(orientation) ) {
+          var degrees = [0,0,0,0,0,90,90,270,270];
+          image.style.transformOrigin = "center";
+          transform += `translateY(${(image.width - image.width / ratio) / 2}px) rotate(${degrees[orientation]}deg) `;
+        }
+        if ( flippingOrientations.includes(orientation) ) {
+          var flipDirection = [null,null,"X","X","Y","Y",null,"Y",null];
+          transform += `scale${flipDirection[orientation]}(-1) `;
+        }
+        if ( orientation == 3 ) transform += `rotate(180deg) `;
+        image.style.transform = transform;
+        var imageDiv = document.getElementById("photo-viewer-image-div");
+        if ( imageDiv.firstChild ) imageDiv.removeChild(imageDiv.firstChild);
+        imageDiv.appendChild(image);
+      });
+    }
+  }
+  moveImage(move) {
+    this.currentImageIndex += move;
+    this.renderImage();
   }
   renderSelectPage() {
     fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
@@ -160,7 +200,8 @@ class PhotoAgent {
             pagent.albumName = album;
             pagent.albumImages = list;
             pagent.currentImageIndex = 0;
-            console.log(list);
+            openPage("photo-viewer");
+            pagent.renderImage();
           });
         }
         albumObj.appendChild(button);
