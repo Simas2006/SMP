@@ -3,6 +3,7 @@ var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 var validMusicExts = [".mp3",".m4a",".wav",".ogg"];
 var validPhotoExts = [".jpg",".png",".gif",".tiff"];
 var magent,pagent;
+var currentPage = "home";
 
 class MusicAgent {
   constructor() {
@@ -139,6 +140,7 @@ class PhotoAgent {
     this.currentImageIndex = 0;
   }
   renderImage() {
+    document.getElementById("photo-viewer-text").innerText = `Album: ${this.albumName}\n${this.albumImages[this.currentImageIndex]} (${this.currentImageIndex + 1} of ${this.albumImages.length})`
     var image = new Image();
     image.src = `${__dirname}/../data/photos/${encodeURIComponent(this.albumName)}/${encodeURIComponent(this.albumImages[this.currentImageIndex])}`;
     image.onload = function() {
@@ -158,7 +160,6 @@ class PhotoAgent {
           if ( useHeight ) image.width = imageHeight;
           else image.height = imageWidth;
         }
-        console.log(orientation);
         var transform = "";
         if ( rotatingOrientations.includes(orientation) ) {
           var degrees = [0,0,0,0,0,90,90,270,270];
@@ -179,6 +180,7 @@ class PhotoAgent {
   }
   moveImage(move) {
     this.currentImageIndex += move;
+    this.currentImageIndex = Math.max(Math.min(this.currentImageIndex,this.albumImages.length - 1),0);
     this.renderImage();
   }
   renderSelectPage() {
@@ -200,6 +202,8 @@ class PhotoAgent {
             pagent.albumName = album;
             pagent.albumImages = list;
             pagent.currentImageIndex = 0;
+            var imageDiv = document.getElementById("photo-viewer-image-div");
+            if ( imageDiv.firstChild ) imageDiv.removeChild(imageDiv.firstChild);
             openPage("photo-viewer");
             pagent.renderImage();
           });
@@ -214,8 +218,16 @@ function openPage(page) {
   Array.from(document.getElementsByClassName("page")).forEach(function(item) {
     item.style.display = (item.id == page + "-page" ? "inline" : "none");
   });
+  currentPage = page;
   if ( page == "music" ) magent.renderSelectPage();
   else if ( page == "photo-select" ) pagent.renderSelectPage();
+}
+
+window.onkeydown = function(event) {
+  if ( currentPage == "photo-viewer" ) {
+    if ( event.code == "ArrowLeft" ) pagent.moveImage(-1);
+    else if ( event.code == "ArrowRight" ) pagent.moveImage(1);
+  }
 }
 
 window.onload = function() {
