@@ -1,0 +1,48 @@
+body {
+  background-color: #ccffdd;
+  font-family: "DIN Alternate";
+  text-align: center;
+  font-size: 3vh;
+  margin: 20px;
+}
+* {
+  margin: 5px;
+}
+h1 {
+  font-size: 5vh;
+}
+button {
+  background-color: #ccffdd;
+  font-size: 100%;
+  font-family: "DIN Alternate";
+}
+#home-progress-bar {
+  display: inline-block;
+  background-color: #bbeecc;
+  height: 1em;
+  width: 90vw;
+  margin-top: 0.1em;
+  border-radius: 0.5em;
+  border: 1px solid lightgray;
+  text-align: left;
+  overflow: hidden;
+}
+#home-current-progress {
+  display: inline-block;
+  height: 1em;
+  width: 0;
+  background-color: #0c0;
+}
+#home-panel {
+  display: inline-block;
+  text-align: center;
+}
+#home-panel button {
+  display: block;
+  width: 3.5em;
+  height: 3em;
+  border: 4px solid #558866;
+}
+#home-panel button.wide-button {
+  width: calc(100% - 10px);
+}

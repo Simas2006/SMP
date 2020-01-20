@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SMP</title>
+  <link rel="stylesheet" type="text/css" href="reset.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script src="script.js"></script>
+</head>
+<body>
+  <h1>SMP</h1>
+  <hr />
+  <p>Now Playing: Xxxxxx Yyyyyy</p>
+  <br />
+  <div class="inline">
+    <span id="home-start-time">00:00</span>
+    <div id="home-progress-bar">
+      <div id="home-current-progress"></div>
+    </div>
+    <span id="home-end-time">-00:00</span>
+  </div>
+  <br />
+  <table id="home-panel">
+    <tr>
+      <td>
+        <button onclick="magent.rewindSong()">&#x23ea;</button>
+      </td>
+      <td>
+        <button id="home-play-button" onclick="magent.togglePlay()">▶</button>
+      </td>
+      <td>
+        <button onclick="magent.playNextSong()">&#x23e9;</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button onclick="magent.setVolume(-5,true)">V-</button>
+      </td>
+      <td>
+        <button id="home-volume-button" onclick="magent.muteButton()">100%</button>
+      </td>
+      <td>
+        <button onclick="magent.setVolume(5,true)">V+</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <button class="wide-button" id="home-loop-button" onclick="magent.switchLoopMode()">Plays Once</button>
+      </td>
+      <td>
+        <button onclick="magent.resetAll()">X</button>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
