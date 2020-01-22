@@ -214,6 +214,12 @@ class PhotoAgent {
   }
 }
 
+class InternetAgent {
+  constructor() {
+    
+  }
+}
+
 function openPage(page) {
   Array.from(document.getElementsByClassName("page")).forEach(function(item) {
     item.style.display = (item.id == page + "-page" ? "inline" : "none");
