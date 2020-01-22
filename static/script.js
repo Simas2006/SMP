@@ -1,8 +1,9 @@
 var fs = require("fs");
+var {spawn} = require("child_process");
 var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 var validMusicExts = [".mp3",".m4a",".wav",".ogg"];
 var validPhotoExts = [".jpg",".png",".gif",".tiff"];
-var magent,pagent;
+var magent,pagent,iagent;
 var currentPage = "home";
 
 class MusicAgent {
@@ -216,7 +217,50 @@ class PhotoAgent {
 
 class InternetAgent {
   constructor() {
-    
+    this.serverSlots = [null,null];
+    this.mobileControlStart = true;
+    this.mobileControlPort = 7000;
+  }
+  startServer(obj,index) {
+    var proc = spawn("node",[obj.path,obj.port]);
+    proc.stdout.on("data",function(data) {
+      console.log(`SERVER #${index}: ${data}`);
+    });
+    proc.stderr.on("data",function(data) {
+      console.log(`SERVER #${index}: ${data}`);
+    });
+    proc.on("close",function(code) {
+      console.log(`Server ${index} closed with code ${code}`);
+    });
+    this.serverSlots[index] = {
+      "path": obj.path,
+      "port": obj.port,
+      "ioFile": obj.ioFile,
+      "interval": this.processIoFile(index),
+      proc
+    };
+  }
+  processIoFile(index) {
+    return setInterval(_ => {
+      fs.readFile(this.serverSlots[index].ioFile,function(err,data) {
+        if ( err ) throw err;
+        data = data.toString();
+        if ( ! data.startsWith("s ") ) return;
+        console.log(data);
+      });
+    },250);
+  }
+  writeToIoFile(index,msg,callback) {
+    fs.writeFile(this.serverSlots[index].ioFile,msg,err => {
+      if ( err ) throw err;
+      callback();
+    });
+  }
+  stopServer(index,callback) {
+    this.writeToIoFile(index,"a exit",_ => {
+      clearInterval(this.serverSlots[index].interval);
+      callback();
+    });
   }
 }
 
@@ -239,5 +283,6 @@ window.onkeydown = function(event) {
 window.onload = function() {
   magent = new MusicAgent();
   pagent = new PhotoAgent();
+  iagent = new InternetAgent();
   openPage("home");
 }
