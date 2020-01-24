@@ -225,9 +225,20 @@ class PhotoAgent {
 class InternetAgent {
   constructor() {
     this.serverSlots = [null,null];
-    this.mobileControlStart = true;
-    this.mobileControlPort = 7000;
     this.ignoreUpdateStatus = false;
+    this.config = null;
+    fs.readFile(`${__dirname}/../config.json`,(err,data) => {
+      if ( err ) throw err;
+      this.config = JSON.parse(data.toString());
+      console.log(this.config)
+      if ( this.config.mobileControlStart ) {
+        this.startServer({
+          "path": `${__dirname}/../mobile-control/server.js`,
+          "port": this.config.mobileControlPort,
+          "ioFile": `${__dirname}/../mobile-control/io_file`
+        },0);
+      }
+    });
   }
   startServer(obj,index) {
     var proc = spawn("node",[obj.path,obj.port]);
@@ -238,7 +249,7 @@ class InternetAgent {
       console.log(`SERVER #${index}: ${data}`);
     });
     proc.on("close",function(code) {
-      console.log(`Server ${index} closed with code ${code}`);
+      console.log(`SERVER #${index} closed with code ${code}`);
     });
     this.serverSlots[index] = {
       "path": obj.path,
@@ -314,6 +325,19 @@ class InternetAgent {
       clearInterval(this.serverSlots[index].interval);
       callback();
     });
+  }
+  stopAllServers(callback,index) {
+    if ( ! index ) index = 0;
+    if ( ! callback ) callback = Function.prototype;
+    if ( this.serverSlots[index] ) {
+      this.stopServer(index,_ => {
+        if ( index + 1 >= this.serverSlots.length ) callback();
+        else this.stopAllServers(callback,index + 1);
+      });
+    } else {
+      if ( index + 1 >= this.serverSlots.length ) callback();
+      else this.stopAllServers(callback,index + 1);
+    }
   }
 }
 
