@@ -43,8 +43,10 @@ class MusicAgent {
     songName = songName.split(".").slice(0,-1).join(".");
     document.getElementById("home-album-name").innerText = `Now Playing: ${this.albumName}`;
     document.getElementById("home-song-name").innerText = `${songName} (${this.currentSongIndex + 1} of ${this.albumSongs.length})`;
+    iagent.updateStatus();
   }
   resetAll() {
+    iagent.ignoreUpdateStatus = true;
     this.togglePlay(true,false);
     this.active = false;
     this.albumName = null;
@@ -54,6 +56,8 @@ class MusicAgent {
     document.getElementById("home-album-name").innerText = "Now Playing: Nothing!";
     document.getElementById("home-song-name").innerHTML = "&nbsp;";
     document.getElementById("home-current-progress").style.width = `0em`;
+    iagent.ignoreUpdateStatus = false;
+    iagent.updateStatus();
   }
   setVolume(amount,change) {
     if ( ! change ) this.volume = amount;
@@ -62,6 +66,7 @@ class MusicAgent {
     this.audioObject.volume = this.volume / 100;
     if ( this.volume > 0 ) this.savedVolume = -1;
     document.getElementById("home-volume-button").innerText = `${this.volume}%`;
+    iagent.updateStatus();
   }
   togglePlay(setState,value) {
     if ( ! this.active ) return;
@@ -75,6 +80,7 @@ class MusicAgent {
       this.audioObject.pause();
     }
     this.currentlyPlaying = nextState;
+    iagent.updateStatus();
   }
   updateTime() {
     var pad = n => n < 10 ? "0" + n : n.toString();
@@ -103,6 +109,7 @@ class MusicAgent {
     this.loopMode = ! this.loopMode;
     if ( this.loopMode ) document.getElementById("home-loop-button").innerText = "Loops Forever";
     else document.getElementById("home-loop-button").innerText = "Plays Once";
+    iagent.updateStatus();
   }
   renderSelectPage() {
     fs.readdir(`${__dirname}/../data/music`,function(err,list) {
@@ -220,6 +227,7 @@ class InternetAgent {
     this.serverSlots = [null,null];
     this.mobileControlStart = true;
     this.mobileControlPort = 7000;
+    this.ignoreUpdateStatus = false;
   }
   startServer(obj,index) {
     var proc = spawn("node",[obj.path,obj.port]);
@@ -246,20 +254,49 @@ class InternetAgent {
         if ( err ) throw err;
         data = data.toString();
         if ( ! data.startsWith("s ") ) return;
-        fs.writeFile(this.serverSlots[index].ioFile,"",function(err) {
+        data = data.slice(2);
+        fs.writeFile(this.serverSlots[index].ioFile,"",err => {
           if ( err ) throw err;
+          if ( index == 0 ) this.processMobileControl(data);
         });
       });
     },250);
   }
+  processMobileControl(data) {
+    data = data.split(" ");
+    if ( data[0] == "ping" ) {
+      this.writeToIoFile(0,"status " + JSON.stringify(this.getMusicStatus()),Function.prototype);
+    }
+    console.log(data);
+  }
+  updateStatus() {
+    if ( this.ignoreUpdateStatus ) return;
+    if ( this.serverSlots[0] ) {
+      this.writeToIoFile(0,"status " + JSON.stringify(this.getMusicStatus()),Function.prototype);
+    }
+  }
+  getMusicStatus() {
+    return {
+      "active": magent.active,
+      "currentlyPlaying": magent.currentlyPlaying,
+      "albumName": magent.albumName,
+      "currentSong": magent.albumSongs[magent.currentSongIndex],
+      "currentSongIndex": magent.currentSongIndex,
+      "albumLength": magent.albumSongs.length,
+      "volume": magent.volume,
+      "loopMode": magent.loopMode,
+      "currentTime": magent.audioObject.currentTime,
+      "duration": magent.audioObject.duration || 0
+    }
+  }
   writeToIoFile(index,msg,callback) {
-    fs.writeFile(this.serverSlots[index].ioFile,msg,err => {
+    fs.writeFile(this.serverSlots[index].ioFile,"a " + msg,err => {
       if ( err ) throw err;
       callback();
     });
   }
   stopServer(index,callback) {
-    this.writeToIoFile(index,"a exit",_ => {
+    this.writeToIoFile(index,"exit",_ => {
       clearInterval(this.serverSlots[index].interval);
       callback();
     });

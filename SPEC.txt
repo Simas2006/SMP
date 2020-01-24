@@ -13,5 +13,5 @@ Mobile Control IO Commands:
   - s pns
   - s vchange <amount>
   - s mute
-  - s togglemode
+  - s toggleloopmode
   - s clear
