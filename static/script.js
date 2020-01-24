@@ -242,11 +242,13 @@ class InternetAgent {
   }
   processIoFile(index) {
     return setInterval(_ => {
-      fs.readFile(this.serverSlots[index].ioFile,function(err,data) {
+      fs.readFile(this.serverSlots[index].ioFile,(err,data) => {
         if ( err ) throw err;
         data = data.toString();
         if ( ! data.startsWith("s ") ) return;
-        console.log(data);
+        fs.writeFile(this.serverSlots[index].ioFile,"",function(err) {
+          if ( err ) throw err;
+        });
       });
     },250);
   }

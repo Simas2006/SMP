@@ -2,12 +2,16 @@
 - Big-screen pictures (Fr)
 - Shares pictures over internet (B1)
 - Control volume, etc. on phone (B2)
-
 (opt: LonelyScreen/AirPlay integration)
 
- NOW PLAYING: ALBUM NAME
-   Song Name (X of Y)
-00:10 [==========] 10:00
-      [<] [P] [>]
-      [+] [%] [-]
-      [ ] [L] [X]
+Mobile Control IO Commands:
+  - a status <music status>
+  - a exit
+  - s ping
+  - s toggleplay
+  - s rewind
+  - s pns
+  - s vchange <amount>
+  - s mute
+  - s togglemode
+  - s clear

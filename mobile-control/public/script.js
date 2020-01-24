@@ -2,8 +2,8 @@ var socket;
 
 function setupSockets() {
   socket = io();
-  socket.on("get-music-status",function(status) {
-    console.log(status);
+  socket.on("io-in-message",function(data) {
+    console.log(data);
   });
 }
 
