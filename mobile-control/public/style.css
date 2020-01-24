@@ -4,6 +4,7 @@ body {
   text-align: center;
   font-size: 3vh;
   margin: 20px;
+  overflow: hidden;
 }
 * {
   margin: 5px;
@@ -15,6 +16,7 @@ button {
   background-color: #ccffdd;
   font-size: 100%;
   font-family: "DIN Alternate";
+  touch-action: manipulation;
 }
 #progress-bar {
   display: inline-block;
