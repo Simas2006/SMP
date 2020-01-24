@@ -10,6 +10,7 @@ class MusicAgent {
   constructor() {
     this.audioObject = document.getElementById("audioObject");
     this.audioObject.onended = _ => this.playNextSong();
+    this.audioObject.oncanplaythrough = _ => iagent.updateStatus();
     this.active = false;
     this.currentlyPlaying = false;
     this.albumName = null;
@@ -43,7 +44,6 @@ class MusicAgent {
     songName = songName.split(".").slice(0,-1).join(".");
     document.getElementById("home-album-name").innerText = `Now Playing: ${this.albumName}`;
     document.getElementById("home-song-name").innerText = `${songName} (${this.currentSongIndex + 1} of ${this.albumSongs.length})`;
-    iagent.updateStatus();
   }
   resetAll() {
     iagent.ignoreUpdateStatus = true;
@@ -266,6 +266,20 @@ class InternetAgent {
     data = data.split(" ");
     if ( data[0] == "ping" ) {
       this.writeToIoFile(0,"status " + JSON.stringify(this.getMusicStatus()),Function.prototype);
+    } else if ( data[0] == "toggleplay" ) {
+      magent.togglePlay();
+    } else if ( data[0] == "pns" ) {
+      magent.playNextSong();
+    } else if ( data[0] == "rewind" ) {
+      magent.rewindSong();
+    } else if ( data[0] == "vchange" ) {
+      magent.setVolume(parseInt(data[1]),true);
+    } else if ( data[0] == "mute" ) {
+      magent.muteButton();
+    } else if ( data[0] == "toggleloopmode" ) {
+      magent.switchLoopMode();
+    } else if ( data[0] == "clear" ) {
+      magent.resetAll();
     }
     console.log(data);
   }
