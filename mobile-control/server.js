@@ -7,6 +7,10 @@ var PORT = process.argv[2] || 8000;
 
 app.use("/public",express.static(__dirname + "/public"));
 
+app.get("/",function(request,response) {
+  response.redirect("/public");
+});
+
 io.on("connection",function(socket) {
   socket.on("io-out-message",function(data) {
     fs.writeFile(`${__dirname}/io_file`,"s " + data,function(err) {
