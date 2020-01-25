@@ -13,7 +13,7 @@
     <h1>SMP</h1>
     <button class="important" onclick="openPage('music')">Search for Music</button>
     <button class="important" onclick="openPage('photo-select')">View Photos</button>
-    <button class="important" onclick="">Enter Settings</button>
+    <button class="important" onclick="openPage('settings')">Enter Settings</button>
     <hr />
     <p id="home-album-name">Now Playing: Nothing!</p>
     <p id="home-song-name">&nbsp;</p>
@@ -89,6 +89,11 @@
       </tr></table>
     </div>
     <div id="photo-viewer-image-div"></div>
+  </div>
+  <div id="settings-page" class="page">
+    <h1>SMP</h1>
+    <button class="important" onclick="openPage('home')">Back to Home</button>
+    <hr />
   </div>
   <audio id="audioObject"></audio>
 </body>

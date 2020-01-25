@@ -361,5 +361,9 @@ window.onload = function() {
   magent = new MusicAgent();
   pagent = new PhotoAgent();
   iagent = new InternetAgent();
+  window.onbeforeunload = function() {
+    iagent.stopAllServers();
+    return null;
+  }
   openPage("home");
 }
