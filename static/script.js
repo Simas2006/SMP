@@ -269,6 +269,7 @@ class InternetAgent {
         fs.writeFile(this.serverSlots[index].ioFile,"",err => {
           if ( err ) throw err;
           if ( index == 0 ) this.processMobileControl(data);
+          else if ( index == 1 ) this.processImageAccess(data);
         });
       });
     },250);
@@ -292,6 +293,8 @@ class InternetAgent {
     } else if ( data[0] == "clear" ) {
       magent.resetAll();
     }
+  }
+  processImageAccess(data) {
     console.log(data);
   }
   updateStatus() {

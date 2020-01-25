@@ -1,4 +1,4 @@
 {
-  "mobileControlStart": true,
+  "mobileControlStart": false,
   "mobileControlPort": 7000
 }

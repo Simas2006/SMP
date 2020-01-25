@@ -1,0 +1,19 @@
+body {
+  background-color: #ccffdd;
+  font-family: "DIN Alternate";
+  text-align: center;
+  font-size: 3vh;
+  margin: 20px;
+  overflow: hidden;
+}
+* {
+  margin: 5px;
+}
+h1 {
+  font-size: 5vh;
+}
+button {
+  background-color: #ccffdd;
+  font-size: 100%;
+  font-family: "DIN Alternate";
+}
