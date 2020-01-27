@@ -13,7 +13,6 @@ function setupSockets() {
   socket.on("io-in-message",function(data) {
     processIoFile(data);
   });
-  socket.emit("io-out-message","ping");
 }
 
 window.onload = setupSockets;

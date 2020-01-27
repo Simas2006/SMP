@@ -6,7 +6,10 @@ function createWindow() {
   var size = require("electron").screen.getPrimaryDisplay().size;
   window = new BrowserWindow({
     width: size.width,
-    height: size.height
+    height: size.height,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
   window.webContents.openDevTools();
   window.on("closed",function() {
