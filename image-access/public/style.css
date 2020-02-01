@@ -21,6 +21,44 @@ input {
   font-size: 100%;
   font-family: "DIN Alternate";
 }
+#albums-page {
+  text-align: left;
+}
+#albums-page button {
+  display: block;
+}
+#albums-page h1 {
+  font-size: 150%;
+}
 .page {
+  display: none;
+}
+@keyframes loading {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loading-sign {
+  display: inline-block;
+  position: relative;
+  width: 1.5em;
+  height: 1.5em;
+  background: linear-gradient(to right,blue 50%,#66ddff 50%);
+  animation: loading 1s linear infinite;
+  border-radius: 100%;
+}
+.loading-sign-hole {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 25%;
+  left: 25%;
+  background-color: #ccffdd;
+  border-radius: 100%;
+}
+.hidden {
   display: none;
 }

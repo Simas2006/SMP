@@ -9,10 +9,20 @@
   <script src="script.js"></script>
 </head>
 <body>
+  <div id="loading-page" class="page">
+    <div class="loading-sign"><div class="loading-sign-hole"></div></div>
+  </div>
   <div id="auth-page" class="page">
     Login Password:<br />
     <input type="password" id="auth-password" onkeydown="if ( event.key == 'Enter' ) submitPassword();" />
     <button onclick="submitPassword()">Submit</button>
+    <br />
+    <div id="auth-loading" class="loading-sign hidden"><div class="loading-sign-hole"></div></div>
+  </div>
+  <div id="albums-page" class="page">
+    <h1>Albums</h1>
+    <hr />
+    <div id="album-div"></div>
   </div>
 </body>
 </html>

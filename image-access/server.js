@@ -6,7 +6,7 @@ var app = express();
 var https = require("https");
 var validPhotoExts = [".jpg",".png",".gif",".tiff"];
 var PORT = process.argv[2] || 8000;
-var PWD_HASH = "$2b$10$jZxwBx3nCWLhTGwXzJYOSe73dyhRLGIi/fd/ropB9SNj7kEoF9QEC";
+var PWD_HASH = "$2b$10$IA6GQPbFG0bQzUKv2mVSFOlDdbs7h5.YfIOa85OSDHkxbrMNlh8p.";
 var VALID_TOKENS = {};
 
 var options = {
@@ -29,7 +29,12 @@ server.listen(PORT,function() {
 var io = require("socket.io")(server);
 io.on("connection",function(socket) {
   socket.authenticated = false;
-  socket.on("logon",function(credType,credValue,callback) {
+  socket.on("logon",function(credType,credValue,oldCallback) {
+    function callback(a,b,c,d,e,f,g,h,i,j) {
+      setTimeout(function() {
+        oldCallback(a,b,c,d,e,f,g,h,i,j);
+      },1000);
+    }
     if ( credType == "password" ) {
       bcrypt.compare(credValue,PWD_HASH,function(err,result) {
         if ( err ) throw err;
@@ -62,7 +67,12 @@ io.on("connection",function(socket) {
       });
     }
   });
-  socket.on("list-albums",function(callback) {
+  socket.on("list-albums",function(oldCallback) {
+    function callback(a,b,c,d,e,f,g,h,i,j) {
+      setTimeout(function() {
+        oldCallback(a,b,c,d,e,f,g,h,i,j);
+      },1000);
+    }
     if ( ! socket.authenticated ) return;
     fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
       if ( err ) throw err;
