@@ -2,8 +2,8 @@ body {
   background-color: #ccffdd;
   font-family: "DIN Alternate";
   text-align: center;
-  font-size: 3vh;
   margin: 20px;
+  font-size: 135%;
   overflow: hidden;
 }
 * {
@@ -16,4 +16,11 @@ button {
   background-color: #ccffdd;
   font-size: 100%;
   font-family: "DIN Alternate";
+}
+input {
+  font-size: 100%;
+  font-family: "DIN Alternate";
+}
+.page {
+  display: none;
 }

@@ -9,7 +9,10 @@
   <script src="script.js"></script>
 </head>
 <body>
-  <h1>SMP</h1>
-  <hr />
+  <div id="auth-page" class="page">
+    Login Password:<br />
+    <input type="password" id="auth-password" onkeydown="if ( event.key == 'Enter' ) submitPassword();" />
+    <button onclick="submitPassword()">Submit</button>
+  </div>
 </body>
 </html>
