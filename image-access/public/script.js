@@ -13,7 +13,7 @@ function listAlbums() {
       button.innerText = albums[i];
       button["data-album"] = albums[i];
       button.onclick = function() {
-        var imageDiv = document.getElementById("photo-viewer-image-div");
+        var imageDiv = document.getElementById("viewer-image-div");
         if ( imageDiv.firstChild ) imageDiv.removeChild(imageDiv.firstChild);
         openAlbum(this["data-album"]);
         var sign = document.createElement("div");
@@ -39,7 +39,7 @@ function openAlbum(album) {
     imageStates = new Array(list.length).fill(0);
     imageIndex = 0;
     loadImageWithAuth(0,function() {
-      openPage("photo-viewer");
+      openPage("viewer");
       renderImage(0);
       var albumLoading = document.getElementById("album-loading");
       albumLoading.parentElement.removeChild(albumLoading);
@@ -52,19 +52,19 @@ function openAlbum(album) {
 function renderImage() {
   if ( imageStates[imageIndex] == 1 ) {
     renderPending = true;
-    setHidden("photo-viewer-loading",false);
+    setHidden("viewer-loading",false);
     return;
   } else {
     renderPending = false;
   }
   var image = loadedImages[imageIndex].cloneNode(true);
-  document.getElementById("photo-viewer-text").innerText = `${currentAlbum}\n${imageList[imageIndex]} (${imageIndex + 1} of ${imageList.length})`;
+  document.getElementById("viewer-text").innerText = `${currentAlbum}\n${imageList[imageIndex]} (${imageIndex + 1} of ${imageList.length})`;
   EXIF.getData(image,function() {
     var rotatingOrientations = [5,6,7,8];
     var flippingOrientations = [2,4,5,7];
     var orientation = EXIF.getTag(this,"Orientation");
     var imageWidth = window.innerWidth - 30;
-    var imageHeight = window.innerHeight - document.getElementById("photo-viewer-menubar").clientHeight - 25;
+    var imageHeight = window.innerHeight - document.getElementById("viewer-menubar").clientHeight - 25;
     var ratio = image.height / image.width;
     if ( rotatingOrientations.includes(orientation) ) ratio = 1 / ratio;
     var useHeight = ratio * imageWidth > imageHeight;
@@ -87,7 +87,7 @@ function renderImage() {
     }
     if ( orientation == 3 ) transform += `rotate(180deg) `;
     image.style.transform = transform;
-    var imageDiv = document.getElementById("photo-viewer-image-div");
+    var imageDiv = document.getElementById("viewer-image-div");
     if ( imageDiv.firstChild ) imageDiv.removeChild(imageDiv.firstChild);
     imageDiv.appendChild(image);
   });
@@ -170,7 +170,7 @@ function openPage(page) {
     item.style.display = (item.id == page + "-page" ? "inline" : "none");
   });
   currentPage = page;
-  if ( page == "photo-viewer" ) document.body.style.margin = "0px";
+  if ( page == "viewer" ) document.body.style.margin = "0px";
   else document.body.style.margin = "20px";
 }
 
@@ -182,7 +182,7 @@ function setupSockets() {
     if ( renderPending ) {
       if ( imageStates[imageIndex] == 2 ) {
         renderImage();
-        setHidden("photo-viewer-loading",true);
+        setHidden("viewer-loading",true);
       }
     }
   },100);

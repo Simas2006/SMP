@@ -37,20 +37,20 @@ input {
     transform: rotate(360deg);
   }
 }
-#photo-viewer-page hr {
+#viewer-page hr {
   margin-bottom: 0.1em;
 }
-#photo-viewer-panel button:not(#photo-viewer-home) {
+#viewer-panel button:not(#viewer-home) {
   width: 2em;
   height: 2em;
 }
-#photo-viewer-panel td:first-child {
+#viewer-panel td:first-child {
   width: 10vw;
 }
-#photo-viewer-panel td:nth-child(2) {
+#viewer-panel td:nth-child(2) {
   width: 80vw;
 }
-#photo-viewer-panel td:last-child {
+#viewer-panel td:last-child {
   width: 10vw;
 }
 .loading-sign {
