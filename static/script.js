@@ -154,7 +154,7 @@ class PhotoAgent {
     image.onload = function() {
       EXIF.getData(image,function() {
         var rotatingOrientations = [5,6,7,8];
-        var flippingOrientations = [2,4,5,7]
+        var flippingOrientations = [2,4,5,7];
         var orientation = EXIF.getTag(this,"Orientation");
         var imageWidth = window.innerWidth - 30;
         var imageHeight = window.innerHeight - document.getElementById("photo-viewer-menubar").clientHeight - 25;

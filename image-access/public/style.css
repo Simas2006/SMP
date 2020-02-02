@@ -4,7 +4,6 @@ body {
   text-align: center;
   margin: 20px;
   font-size: 135%;
-  overflow: hidden;
 }
 * {
   margin: 5px;
@@ -24,9 +23,6 @@ input {
 #albums-page {
   text-align: left;
 }
-#albums-page button {
-  display: block;
-}
 #albums-page h1 {
   font-size: 150%;
 }
@@ -40,6 +36,22 @@ input {
   to {
     transform: rotate(360deg);
   }
+}
+#photo-viewer-page hr {
+  margin-bottom: 0.1em;
+}
+#photo-viewer-panel button:not(#photo-viewer-home) {
+  width: 2em;
+  height: 2em;
+}
+#photo-viewer-panel td:first-child {
+  width: 10vw;
+}
+#photo-viewer-panel td:nth-child(2) {
+  width: 80vw;
+}
+#photo-viewer-panel td:last-child {
+  width: 10vw;
 }
 .loading-sign {
   display: inline-block;
@@ -58,6 +70,10 @@ input {
   left: 25%;
   background-color: #ccffdd;
   border-radius: 100%;
+}
+.loading-sign-small {
+  width: 1.25em;
+  height: 1.25em;
 }
 .hidden {
   display: none;

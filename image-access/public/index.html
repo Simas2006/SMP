@@ -6,6 +6,7 @@
   <link rel="stylesheet" type="text/css" href="reset.css" />
   <link rel="stylesheet" type="text/css" href="style.css" />
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
   <script src="script.js"></script>
 </head>
 <body>
@@ -23,6 +24,20 @@
     <h1>Albums</h1>
     <hr />
     <div id="album-div"></div>
+  </div>
+  <div id="photo-viewer-page" class="page">
+    <div id="photo-viewer-menubar">
+      <table id="photo-viewer-panel"><tr>
+        <td><button onclick="moveImage(-1)">⇦</button></td>
+        <td>
+          <button id="photo-viewer-home" onclick="openPage('albums')">Back to Albums</button>
+          <b id="photo-viewer-text"></b>
+          <div id="photo-viewer-loading" class="loading-sign hidden"><div class="loading-sign-hole"></div></div>
+        </td>
+        <td><button onclick="moveImage(1)">⇨</button></td>
+      </tr></table>
+    </div>
+    <div id="photo-viewer-image-div"></div>
   </div>
 </body>
 </html>

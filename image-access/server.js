@@ -26,17 +26,30 @@ server.listen(PORT,function() {
   processIoFile();
 });
 
+app.use("/photos",function(request,response) {
+  console.log(request.url,request.header("Authentication-ID"),request.header("Authentication-Token"));
+  var id = request.header("Authentication-ID");
+  var token = request.header("Authentication-Token");
+  bcrypt.compare(token,VALID_TOKENS[id] || "",function(err,result) {
+    if ( err ) throw err;
+    if ( result ) {
+      response.status(200);
+      setTimeout(_ => {
+        fs.createReadStream(`${__dirname}/../data/photos/${decodeURIComponent(request.url)}`).pipe(response);
+      },2000);
+    } else {
+      response.status(401);
+      response.send("401 Not Authorized");
+    }
+  });
+});
+
 var io = require("socket.io")(server);
 io.on("connection",function(socket) {
   socket.authenticated = false;
-  socket.on("logon",function(credType,credValue,oldCallback) {
-    function callback(a,b,c,d,e,f,g,h,i,j) {
-      setTimeout(function() {
-        oldCallback(a,b,c,d,e,f,g,h,i,j);
-      },1000);
-    }
+  socket.on("logon",function(credType,credValue,callback) {
     if ( credType == "password" ) {
-      bcrypt.compare(credValue,PWD_HASH,function(err,result) {
+      bcrypt.compare(credValue || "",PWD_HASH,function(err,result) {
         if ( err ) throw err;
         if ( result ) {
           crypto.randomBytes(54,function(err,bytes) {
@@ -47,6 +60,7 @@ io.on("connection",function(socket) {
               var token = bytes.toString("base64");
               bcrypt.hash(token,10,function(err,tokenHash) {
                 if ( err ) throw err;
+                socket.authenticated = true;
                 VALID_TOKENS[id] = tokenHash;
                 callback(true,{id,token});
               });
@@ -57,7 +71,8 @@ io.on("connection",function(socket) {
         }
       });
     } else if ( credType == "token" ) {
-      bcrypt.compare(credValue.token,VALID_TOKENS[credValue.id],function(err,result) {
+      credValue = credValue || {};
+      bcrypt.compare(credValue.token || "",VALID_TOKENS[credValue.id] || "",function(err,result) {
         if ( result ) {
           socket.authenticated = true;
           callback(true);
@@ -67,12 +82,7 @@ io.on("connection",function(socket) {
       });
     }
   });
-  socket.on("list-albums",function(oldCallback) {
-    function callback(a,b,c,d,e,f,g,h,i,j) {
-      setTimeout(function() {
-        oldCallback(a,b,c,d,e,f,g,h,i,j);
-      },1000);
-    }
+  socket.on("list-albums",function(callback) {
     if ( ! socket.authenticated ) return;
     fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
       if ( err ) throw err;
