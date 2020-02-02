@@ -6,13 +6,12 @@ var app = express();
 var https = require("https");
 var validPhotoExts = [".jpg",".png",".gif",".tiff"];
 var PORT = process.argv[2] || 8000;
-var PWD_HASH = "$2b$10$IA6GQPbFG0bQzUKv2mVSFOlDdbs7h5.YfIOa85OSDHkxbrMNlh8p.";
-var VALID_TOKENS = {};
 
-var options = {
+var sslOptions = {
   "key": fs.readFileSync(`${__dirname}/ssl/smp.pem`),
   "cert": fs.readFileSync(`${__dirname}/ssl/smp.crt`)
 }
+var authData = JSON.parse(fs.readFileSync(__dirname + "/auth.json").toString());
 
 app.use("/public",express.static(__dirname + "/public"));
 
@@ -20,7 +19,7 @@ app.get("/",function(request,response) {
   response.redirect("/public");
 });
 
-var server = https.createServer(options,app);
+var server = https.createServer(sslOptions,app);
 server.listen(PORT,function() {
   console.log("Listening on port " + PORT);
   processIoFile();
@@ -30,7 +29,7 @@ app.use("/photos",function(request,response) {
   console.log(request.url,request.header("Authentication-ID"),request.header("Authentication-Token"));
   var id = request.header("Authentication-ID");
   var token = request.header("Authentication-Token");
-  bcrypt.compare(token,VALID_TOKENS[id] || "",function(err,result) {
+  bcrypt.compare(token,authData.tokens[id] || "",function(err,result) {
     if ( err ) throw err;
     if ( result ) {
       response.status(200);
@@ -49,7 +48,7 @@ io.on("connection",function(socket) {
   socket.authenticated = false;
   socket.on("logon",function(credType,credValue,callback) {
     if ( credType == "password" ) {
-      bcrypt.compare(credValue || "",PWD_HASH,function(err,result) {
+      bcrypt.compare(credValue || "",authData.pwd_hash,function(err,result) {
         if ( err ) throw err;
         if ( result ) {
           crypto.randomBytes(54,function(err,bytes) {
@@ -61,7 +60,10 @@ io.on("connection",function(socket) {
               bcrypt.hash(token,10,function(err,tokenHash) {
                 if ( err ) throw err;
                 socket.authenticated = true;
-                VALID_TOKENS[id] = tokenHash;
+                authData.tokens[id] = tokenHash;
+                fs.writeFile(__dirname + "/auth.json",JSON.stringify(authData,null,2),function(err) {
+                  if ( err ) throw err;
+                });
                 callback(true,{id,token});
               });
             });
@@ -72,7 +74,7 @@ io.on("connection",function(socket) {
       });
     } else if ( credType == "token" ) {
       credValue = credValue || {};
-      bcrypt.compare(credValue.token || "",VALID_TOKENS[credValue.id] || "",function(err,result) {
+      bcrypt.compare(credValue.token || "",authData.tokens[credValue.id] || "",function(err,result) {
         if ( result ) {
           socket.authenticated = true;
           callback(true);
