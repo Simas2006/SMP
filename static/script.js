@@ -241,19 +241,23 @@ class InternetAgent {
     });
   }
   startServer(obj,index) {
-    var proc = spawn("node",[obj.path,obj.port]);
+    if ( ! obj.options ) obj.options = [obj.port];
+    var proc = spawn("node",[obj.path].concat(obj.options));
     proc.stdout.on("data",function(data) {
       console.log(`SERVER #${index}: ${data}`);
     });
     proc.stderr.on("data",function(data) {
       console.log(`SERVER #${index}: ${data}`);
     });
-    proc.on("close",function(code) {
+    proc.on("close",code => {
       console.log(`SERVER #${index} closed with code ${code}`);
+      clearInterval(this.serverSlots[index].interval);
+      this.serverSlots[index] = null;
     });
     this.serverSlots[index] = {
       "path": obj.path,
       "port": obj.port,
+      "options": obj.options,
       "ioFile": obj.ioFile,
       "interval": this.processIoFile(index),
       proc
@@ -316,6 +320,14 @@ class InternetAgent {
       "currentTime": magent.audioObject.currentTime,
       "duration": magent.audioObject.duration || 0
     }
+  }
+  runAuthSet(command,argument) {
+    if ( this.serverSlots[1] ) return;
+    this.startServer({
+      "path": `${__dirname}/../image-access/auth_set.js`,
+      "options": [command,argument],
+      "ioFile": `${__dirname}/../image-access/io_file`
+    },1);
   }
   writeToIoFile(index,msg,callback) {
     fs.writeFile(this.serverSlots[index].ioFile,"a " + msg,err => {
