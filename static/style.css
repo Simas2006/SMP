@@ -11,10 +11,14 @@ body {
 h1 {
   font-size: 180%;
 }
-button {
+button,input {
   background-color: #ccffdd;
   font-size: 100%;
   font-family: "DIN Alternate";
+}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 #home-progress-bar {
   display: inline-block;
@@ -70,6 +74,16 @@ button {
 #photo-viewer-panel td:last-child {
   width: 10vw;
 }
+#settings-page input {
+  width: 6em;
+}
+#settings-table {
+  display: inline;
+  text-align: center;
+}
+#settings-table td:nth-child(2) {
+  padding-right: 1em;
+}
 .page {
   display: none;
 }
@@ -78,4 +92,11 @@ button {
 }
 .important {
   background-color: #0c0;
+}
+.on-off-switch {
+  background-color: #4c4;
+  width: 3.5em;
+}
+.on-off-switch[data-status='off'] {
+  background-color: #e44;
 }

@@ -2,7 +2,7 @@ var fs = require("fs");
 var bcrypt = require("bcrypt");
 
 var authData = JSON.parse(fs.readFileSync(__dirname + "/auth.json").toString());
-if ( process.argv[2] == "pwd_set" ) {
+if ( process.argv[2] == "set_pwd" ) {
   bcrypt.hash(process.argv[3],10,function(err,hash) {
     if ( err ) throw err;
     authData.pwd_hash = hash;

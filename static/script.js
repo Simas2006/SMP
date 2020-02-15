@@ -1,5 +1,6 @@
 var fs = require("fs");
 var {spawn} = require("child_process");
+var {shell} = require("electron");
 var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 var validMusicExts = [".mp3",".m4a",".wav",".ogg"];
 var validPhotoExts = [".jpg",".png",".gif",".tiff"];
@@ -230,13 +231,20 @@ class InternetAgent {
     fs.readFile(`${__dirname}/../config.json`,(err,data) => {
       if ( err ) throw err;
       this.config = JSON.parse(data.toString());
-      console.log(this.config)
+      console.log("Internet config file loaded",this.config)
       if ( this.config.mobileControlStart ) {
         this.startServer({
           "path": `${__dirname}/../mobile-control/server.js`,
           "port": this.config.mobileControlPort,
           "ioFile": `${__dirname}/../mobile-control/io_file`
         },0);
+      }
+      if ( this.config.imageAccessStart ) {
+        this.startServer({
+          "path": `${__dirname}/../image-access/server.js`,
+          "port": this.config.imageAccessPort,
+          "ioFile": `${__dirname}/../image-access/io_file`
+        },1);
       }
     });
   }
@@ -298,9 +306,7 @@ class InternetAgent {
       magent.resetAll();
     }
   }
-  processImageAccess(data) {
-    console.log(data);
-  }
+  processImageAccess(data) {}
   updateStatus() {
     if ( this.ignoreUpdateStatus ) return;
     if ( this.serverSlots[0] ) {
@@ -338,7 +344,7 @@ class InternetAgent {
   stopServer(index,callback) {
     this.writeToIoFile(index,"exit",_ => {
       clearInterval(this.serverSlots[index].interval);
-      callback();
+      (callback || Function.prototype)();
     });
   }
   stopAllServers(callback,index) {
@@ -354,6 +360,67 @@ class InternetAgent {
       else this.stopAllServers(callback,index + 1);
     }
   }
+  loadSettingsPage() {
+    document.getElementById("mobile-control-switch").setAttribute("data-status",this.config.mobileControlStart ? "on" : "off");
+    document.getElementById("mobile-control-switch").innerText = (this.config.mobileControlStart ? "On" : "Off");
+    document.getElementById("mobile-control-port").value = this.config.mobileControlPort;
+    document.getElementById("mobile-control-port").disabled = (this.config.mobileControlStart ? "disabled" : "");
+    document.getElementById("image-access-switch").setAttribute("data-status",this.config.imageAccessStart ? "on" : "off");
+    document.getElementById("image-access-switch").innerText = (this.config.imageAccessStart ? "On" : "Off");
+    document.getElementById("image-access-port").value = this.config.imageAccessPort;
+    document.getElementById("image-access-port").disabled = (this.config.imageAccessStart ? "disabled" : "");
+  }
+  toggleConfigStart(el) {
+    if ( el.id == "mobile-control-switch" ) {
+      this.config.mobileControlStart = ! this.config.mobileControlStart;
+      if ( this.config.mobileControlStart ) {
+        this.startServer({
+          "path": `${__dirname}/../mobile-control/server.js`,
+          "port": this.config.mobileControlPort,
+          "ioFile": `${__dirname}/../mobile-control/io_file`
+        },0);
+      } else {
+        this.stopServer(0);
+      }
+    } else if ( el.id == "image-access-switch" ) {
+      this.config.imageAccessStart = ! this.config.imageAccessStart;
+      if ( this.config.imageAccessStart ) {
+        this.startServer({
+          "path": `${__dirname}/../image-access/server.js`,
+          "port": this.config.imageAccessPort,
+          "ioFile": `${__dirname}/../image-access/io_file`
+        },1);
+      } else {
+        this.stopServer(1);
+      }
+    }
+    this.loadSettingsPage();
+    fs.writeFile(`${__dirname}/../config.json`,JSON.stringify(this.config,null,2),function(err) {
+      if ( err ) throw err;
+    });
+  }
+  setConfigPort(el) {
+    if ( el.id == "mobile-control-port" ) {
+      var newPort = parseInt(el.value);
+      if ( newPort < 1024 || newPort > 65535 || isNaN(newPort) ) {
+        alert("Error: Invalid port number (port must be in range 1024-65535)");
+        el.value = this.config.mobileControlPort;
+        return;
+      }
+      this.config.mobileControlPort = newPort;
+    } else if ( el.id == "image-access-port" ) {
+      var newPort = parseInt(el.value);
+      if ( newPort < 1024 || newPort > 65535 || isNaN(newPort) ) {
+        alert("Error: Invalid port number (port must be in range 1024-65535)");
+        el.value = this.config.imageAccessPort;
+        return;
+      }
+      this.config.imageAccessPort = newPort;
+    }
+    fs.writeFile(`${__dirname}/../config.json`,JSON.stringify(this.config,null,2),function(err) {
+      if ( err ) throw err;
+    });
+  }
 }
 
 function openPage(page) {
@@ -363,6 +430,13 @@ function openPage(page) {
   currentPage = page;
   if ( page == "music" ) magent.renderSelectPage();
   else if ( page == "photo-select" ) pagent.renderSelectPage();
+  else if ( page == "settings" ) iagent.loadSettingsPage();
+}
+
+function switchStatus(el) {
+  var newStatus = (el.getAttribute("data-status") == "on" ? "off" : "on");
+  el.innerText = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+  el.setAttribute("data-status",newStatus);
 }
 
 window.onkeydown = function(event) {
