@@ -95,7 +95,7 @@
     <button class="important" onclick="openPage('home')">Back to Home</button>
     <hr />
     <button onclick="shell.openItem(`${__dirname}/../data`)">Open Data Folder</button>
-    <button onclick="shell.openItem(`${__dirname}/../data/photo_list.txt`)">Edit Photo Album List File</button>
+    <button onclick="iagent.openPhotoList()">Edit Photo Album List File</button>
     <br />
     <table id="settings-table">
       <tr>
@@ -109,6 +109,8 @@
         <td><button class="on-off-switch" id="image-access-switch" data-status="on" onclick="switchStatus(this); iagent.toggleConfigStart(this)">On</button></td>
         <td>Port:</td>
         <td><input type="number" id="image-access-port" onblur="iagent.setConfigPort(this)" placeholder="Server Port" /></td>
+        <td><input type="password" id="image-access-password" onblur="iagent.setPassword(this)" placeholder="Change Login Password" /></td>
+        <td><button id="image-access-clear" onclick="iagent.runAuthSet('clear_tokens'); alert('Successfully cleared tokens.')">Clear Tokens</button></td>
       </tr>
     </table>
   </div>

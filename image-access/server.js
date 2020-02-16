@@ -88,7 +88,19 @@ io.on("connection",function(socket) {
     if ( ! socket.authenticated ) return;
     fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
       if ( err ) throw err;
-      callback(list.filter(item => ! item.startsWith(".")));
+      list = list.filter(item => ! item.startsWith("."));
+      fs.readFile(`${__dirname}/../data/photo_list.txt`,function(err,data) {
+        if ( err ) throw err;
+        var orderedList = data.toString().split("\n").filter(item => item);
+        var removed = orderedList.filter(item => ! list.includes(item));
+        orderedList = orderedList.filter(item => ! removed.includes(item));
+        list = list.filter(item => ! orderedList.includes(item));
+        orderedList = list.concat(orderedList);
+        fs.writeFile(`${__dirname}/../data/photo_list.txt`,orderedList.join("\n"),function(err) {
+          if ( err ) throw err;
+        });
+        callback(orderedList);
+      });
     });
   });
   socket.on("list-photos",function(album,callback) {

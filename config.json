@@ -1,6 +1,6 @@
 {
-  "mobileControlStart": true,
+  "mobileControlStart": false,
   "mobileControlPort": 7000,
-  "imageAccessStart": true,
+  "imageAccessStart": false,
   "imageAccessPort": 7100
 }

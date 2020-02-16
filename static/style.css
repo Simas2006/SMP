@@ -75,14 +75,26 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
   width: 10vw;
 }
 #settings-page input {
-  width: 6em;
+  width: 4em;
+}
+#settings-page *[disabled] {
+  background: repeating-linear-gradient(
+    45deg,
+    #bbeecc,
+    #bbeecc 10px,
+    #99ccaa 10px,
+    #99ccaa 20px
+  );
 }
 #settings-table {
   display: inline;
   text-align: center;
 }
-#settings-table td:nth-child(2) {
+#settings-table td:nth-child(2),#settings-table td:nth-child(4) {
   padding-right: 1em;
+}
+#settings-table td:nth-child(5) input {
+  width: 12em;
 }
 .page {
   display: none;

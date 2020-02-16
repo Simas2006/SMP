@@ -196,29 +196,40 @@ class PhotoAgent {
     fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
       if ( err ) throw err;
       list = list.filter(item => ! item.startsWith("."));
-      var albumObj = document.getElementById("photo-select-album-list");
-      while ( albumObj.firstChild ) {
-        albumObj.removeChild(albumObj.firstChild);
-      }
-      for ( var i = 0; i < list.length; i++ ) {
-        var button = document.createElement("button");
-        button.innerText = list[i];
-        button["data-album"] = list[i];
-        button.onclick = function() {
-          var album = this["data-album"];
-          fs.readdir(`${__dirname}/../data/photos/${album}`,function(err,list) {
-            list = list.filter(item => ! item.startsWith(".")).filter(item => validPhotoExts.filter(jtem => item.toLowerCase().endsWith(jtem)).length > 0);
-            pagent.albumName = album;
-            pagent.albumImages = list;
-            pagent.currentImageIndex = 0;
-            var imageDiv = document.getElementById("photo-viewer-image-div");
-            if ( imageDiv.firstChild ) imageDiv.removeChild(imageDiv.firstChild);
-            openPage("photo-viewer");
-            pagent.renderImage();
-          });
+      fs.readFile(`${__dirname}/../data/photo_list.txt`,function(err,data) {
+        if ( err ) throw err;
+        var orderedList = data.toString().split("\n").filter(item => item);
+        var removed = orderedList.filter(item => ! list.includes(item));
+        orderedList = orderedList.filter(item => ! removed.includes(item));
+        list = list.filter(item => ! orderedList.includes(item));
+        orderedList = list.concat(orderedList);
+        var albumObj = document.getElementById("photo-select-album-list");
+        while ( albumObj.firstChild ) {
+          albumObj.removeChild(albumObj.firstChild);
         }
-        albumObj.appendChild(button);
-      }
+        for ( var i = 0; i < orderedList.length; i++ ) {
+          var button = document.createElement("button");
+          button.innerText = orderedList[i];
+          button["data-album"] = orderedList[i];
+          button.onclick = function() {
+            var album = this["data-album"];
+            fs.readdir(`${__dirname}/../data/photos/${album}`,function(err,orderedList) {
+              orderedList = orderedList.filter(item => ! item.startsWith(".")).filter(item => validPhotoExts.filter(jtem => item.toLowerCase().endsWith(jtem)).length > 0);
+              pagent.albumName = album;
+              pagent.albumImages = orderedList;
+              pagent.currentImageIndex = 0;
+              var imageDiv = document.getElementById("photo-viewer-image-div");
+              if ( imageDiv.firstChild ) imageDiv.removeChild(imageDiv.firstChild);
+              openPage("photo-viewer");
+              pagent.renderImage();
+            });
+          }
+          albumObj.appendChild(button);
+        }
+        fs.writeFile(`${__dirname}/../data/photo_list.txt`,orderedList.join("\n"),function(err) {
+          if ( err ) throw err;
+        });
+      });
     });
   }
 }
@@ -231,7 +242,7 @@ class InternetAgent {
     fs.readFile(`${__dirname}/../config.json`,(err,data) => {
       if ( err ) throw err;
       this.config = JSON.parse(data.toString());
-      console.log("Internet config file loaded",this.config)
+      console.log("Internet config file loaded",this.config);
       if ( this.config.mobileControlStart ) {
         this.startServer({
           "path": `${__dirname}/../mobile-control/server.js`,
@@ -335,6 +346,13 @@ class InternetAgent {
       "ioFile": `${__dirname}/../image-access/io_file`
     },1);
   }
+  setPassword(el) {
+    if ( ! el.value ) return;
+    if ( confirm(`Confirm: Setting image access password to "${el.value}"`) ) {
+      this.runAuthSet("set_pwd",el.value);
+      el.value = "";
+    }
+  }
   writeToIoFile(index,msg,callback) {
     fs.writeFile(this.serverSlots[index].ioFile,"a " + msg,err => {
       if ( err ) throw err;
@@ -369,6 +387,8 @@ class InternetAgent {
     document.getElementById("image-access-switch").innerText = (this.config.imageAccessStart ? "On" : "Off");
     document.getElementById("image-access-port").value = this.config.imageAccessPort;
     document.getElementById("image-access-port").disabled = (this.config.imageAccessStart ? "disabled" : "");
+    document.getElementById("image-access-password").disabled = (this.config.imageAccessStart ? "disabled" : "");
+    document.getElementById("image-access-clear").disabled = (this.config.imageAccessStart ? "disabled" : "");
   }
   toggleConfigStart(el) {
     if ( el.id == "mobile-control-switch" ) {
@@ -419,6 +439,24 @@ class InternetAgent {
     }
     fs.writeFile(`${__dirname}/../config.json`,JSON.stringify(this.config,null,2),function(err) {
       if ( err ) throw err;
+    });
+  }
+  openPhotoList() {
+    fs.readdir(`${__dirname}/../data/photos`,function(err,list) {
+      if ( err ) throw err;
+      list = list.filter(item => ! item.startsWith("."));
+      fs.readFile(`${__dirname}/../data/photo_list.txt`,function(err,data) {
+        if ( err ) throw err;
+        var orderedList = data.toString().split("\n").filter(item => item);
+        var removed = orderedList.filter(item => ! list.includes(item));
+        orderedList = orderedList.filter(item => ! removed.includes(item));
+        list = list.filter(item => ! orderedList.includes(item));
+        orderedList = list.concat(orderedList);
+        fs.writeFile(`${__dirname}/../data/photo_list.txt`,orderedList.join("\n"),function(err) {
+          if ( err ) throw err;
+          shell.openItem(`${__dirname}/../data/photo_list.txt`);
+        });
+      });
     });
   }
 }
