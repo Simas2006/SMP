@@ -1,5 +1,4 @@
-data/music/
-data/photos/
+data/
 node_modules/
 image-access/ssl/
 image-access/auth.json
