@@ -12,5 +12,8 @@
     "bcrypt": "^3.0.7",
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "electron": "^8.0.2"
   }
 }

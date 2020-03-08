@@ -26,16 +26,13 @@ server.listen(PORT,function() {
 });
 
 app.use("/photos",function(request,response) {
-  console.log(request.url,request.header("Authentication-ID"),request.header("Authentication-Token"));
   var id = request.header("Authentication-ID");
   var token = request.header("Authentication-Token");
   bcrypt.compare(token,authData.tokens[id] || "",function(err,result) {
     if ( err ) throw err;
     if ( result ) {
       response.status(200);
-      setTimeout(_ => {
-        fs.createReadStream(`${__dirname}/../data/photos/${decodeURIComponent(request.url)}`).pipe(response);
-      },2000);
+      fs.createReadStream(`${__dirname}/../data/photos/${decodeURIComponent(request.url)}`).pipe(response);
     } else {
       response.status(401);
       response.send("401 Not Authorized");

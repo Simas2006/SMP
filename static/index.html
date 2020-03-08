@@ -83,9 +83,9 @@
       <button class="important" onclick="openPage('home')">Back to Home</button>
       <hr />
       <table id="photo-viewer-panel"><tr>
-        <td><button onclick="pagent.moveImage(-1)">⇦</button></td>
+        <td><button id="photo-viewer-left-button" onclick="pagent.moveImage(-1)">⇦</button></td>
         <td><b id="photo-viewer-text"></b></td>
-        <td><button onclick="pagent.moveImage(1)">⇨</button></td>
+        <td><button id="photo-viewer-right-button" onclick="pagent.moveImage(1)">⇨</button></td>
       </tr></table>
     </div>
     <div id="photo-viewer-image-div"></div>

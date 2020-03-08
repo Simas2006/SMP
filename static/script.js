@@ -150,6 +150,8 @@ class PhotoAgent {
   }
   renderImage() {
     document.getElementById("photo-viewer-text").innerText = `Album: ${this.albumName}\n${this.albumImages[this.currentImageIndex]} (${this.currentImageIndex + 1} of ${this.albumImages.length})`
+    document.getElementById("photo-viewer-left-button").disabled = (this.currentImageIndex <= 0 ? "disabled" : "");
+    document.getElementById("photo-viewer-right-button").disabled = (this.currentImageIndex >= this.albumImages.length - 1 ? "disabled" : "");
     var image = new Image();
     image.src = `${__dirname}/../data/photos/${encodeURIComponent(this.albumName)}/${encodeURIComponent(this.albumImages[this.currentImageIndex])}`;
     image.onload = function() {

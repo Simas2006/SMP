@@ -59,6 +59,8 @@ function renderImage() {
   }
   var image = loadedImages[imageIndex].cloneNode(true);
   document.getElementById("viewer-text").innerText = `${currentAlbum}\n${imageList[imageIndex]} (${imageIndex + 1} of ${imageList.length})`;
+  document.getElementById("viewer-left-button").disabled = (imageIndex <= 0 ? "disabled" : "");
+  document.getElementById("viewer-right-button").disabled = (imageIndex >= imageList.length - 1 ? "disabled" : "");
   EXIF.getData(image,function() {
     var rotatingOrientations = [5,6,7,8];
     var flippingOrientations = [2,4,5,7];
