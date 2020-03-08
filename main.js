@@ -11,7 +11,7 @@ function createWindow() {
       nodeIntegration: true
     }
   });
-  window.webContents.openDevTools();
+  //window.webContents.openDevTools();
   window.on("closed",function() {
     window = null;
   });
